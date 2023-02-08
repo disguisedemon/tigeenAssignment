@@ -1,0 +1,44 @@
+.questionnaire-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.question-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.options-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid gray;
+  width: 300px;
+  height: 270px;
+  overflow: auto;
+}
+
+.option-button {
+  padding: 10px 20px;
+  margin: 10px;
+  border: none;
+  background-color: white;
+  font-size: 1.2rem;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.option-button:hover {
+  cursor: pointer;
+  background-color: lightgray;
+}
+
+.option-button.selected {
+  background-color: lightblue;
+}

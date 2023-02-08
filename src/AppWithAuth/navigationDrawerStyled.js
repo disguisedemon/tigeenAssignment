@@ -38,9 +38,7 @@ const useStyles = makeStyles((theme) => ({
     overflowX: "hidden",
     width: 56,
   },
-  toolBar: {
-    borderBottom: "0.1em solid #758F7D",
-  },
+
   table: {
     "& .ReactVirtualized__Table__headerColumn:first-of-type": {
       marginLeft: 0,
@@ -60,8 +58,9 @@ const useStyles = makeStyles((theme) => ({
       letterSpacing: "0.4px",
       whiteSpace: "break-spaces",
       fontSize: 20,
-      color: "red",
-      backgroundColor: "yellow",
+      color: "black",
+      background: "linear-gradient(to right, red, yellow, green)",
+      fontWeight: 600,
       marginTop: 8,
       textAlign: "center",
     },
@@ -70,6 +69,7 @@ const useStyles = makeStyles((theme) => ({
       letterSpacing: "0.4px",
       fontSize: 20,
       color: "blue",
+      fontWeight: 600,
     },
     "& .ReactVirtualized__Table__rowColumn": {
       marginRight: 0,

@@ -7,7 +7,7 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import CardActions from "@mui/material/CardActions";
 import Button from "@mui/material/Button";
-import { Grid, CardActionArea, Modal } from "@mui/material";
+import { CardActionArea, Modal } from "@mui/material";
 import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -16,25 +16,24 @@ import { IconButton } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import FirstTab from "./tabComponents/firstTab";
 import Assignment from "./tabComponents/assignment";
-import { questionsArray } from "./tabComponents/table.constants";
+import Theme from "./theme";
+import Snackbar from "./snackBar";
+import "./questionairre.css";
 
-const Navbar = () => {
+const Navbar = (props) => {
+  const { handleSignOut } = props;
   const [items, setItems] = useState([]);
-  const [value, setValue] = React.useState("FirstTab");
-  // const [cardDetails, setCardDetails] = React.useState([]);
-  const [currentQuestion, setCurrentQuestion] = React.useState(0);
+  const [value, setValue] = React.useState("ThemePage");
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  const [firstArray, setArrayValue] = React.useState(questionsArray);
-
   const getDatafromUrl = async () => {
     let res = await axios.get(
       "https://my-json-server.typicode.com/Codeinwp/front-end-internship-api/posts"
     );
-    const data = [...res.data, ...res.data];
+    const data = [...res.data, ...res.data, ...res.data, ...res.data];
     setItems(data);
   };
 
@@ -58,41 +57,62 @@ const Navbar = () => {
   const handleClick = (val) => {
     setOpen(!open);
   };
-  // console.log(currentQuestion);
-  const handleNext = () => {
-    // setSelectedValue(event.target.value)
-    const nextQuestion = currentQuestion + 1;
-    setCurrentQuestion(nextQuestion);
-  };
-  const handlePrev = () => {
-    // setSelectedValue(event.target.value)
-    const prevQuestion = currentQuestion - 1;
-    setCurrentQuestion(prevQuestion);
+  const [currentQuestion, setCurrentQuestion] = useState(1);
+  const [selectedAnswers, setSelectedAnswers] = useState({});
+
+  const questions = [
+    {
+      id: 1,
+      question: "What is your favorite color?",
+      options: ["Red", "Blue", "Green", "Yellow"],
+    },
+    {
+      id: 2,
+      question: "What is your favorite animal?",
+      options: ["Dog", "Cat", "Elephant", "Lion"],
+    },
+    {
+      id: 3,
+      question: "What is your favorite meal?",
+      options: ["Rice", "Roti", "Chapathi", "Chitranna"],
+    },
+    {
+      id: 4,
+      question: "What is your favorite sport?",
+      options: ["Cricket", "Football", "Hockey", "Kunte-Bille"],
+    },
+    // Add more questions here
+  ];
+
+  const handleOptionSelect = (option) => {
+    // Update selected answers in state with selected option
+    setSelectedAnswers({
+      ...selectedAnswers,
+      [currentQuestion]: option,
+    });
   };
 
-  const handleSelection = (opts) => {
-    const newArr = firstArray.map((value) => {
-      // console.log(value.options.radio1 === opts.radio);
-      return {
-        ...value,
-        options: value.options.map((option) => {
-          return {
-            ...option,
-            isChecked: option.radio1 === opts.radio1 ? true : option.isChecked,
-          };
-        }),
-      };
-    });
-    setArrayValue(newArr);
-    // console.log(opts);
+  const handleNext = () => {
+    // Go to next question
+    setCurrentQuestion(currentQuestion + 1);
   };
+
+  const handlePrevious = () => {
+    // Go to previous question
+    setCurrentQuestion(currentQuestion - 1);
+  };
+
+  const handleSubmit = () => {
+    // Submit selected answers
+    console.log(selectedAnswers);
+  };
+
   const [hoveredCard, setHoveredCard] = React.useState();
 
   const handleMouseEnter = (val) => {
     setOpen(true);
     setHoveredCard(val);
   };
-  console.log(hoveredCard);
 
   const [navDrawerOpen, setNavDrawerOpen] = useState(false);
 
@@ -115,6 +135,7 @@ const Navbar = () => {
           setNavDrawerOpen={setNavDrawerOpen}
           toggleNavDrawer={() => toggleNavDrawer()}
           setValue={setValue}
+          handleSignOut={() => handleSignOut()}
         />
         <Box
           sx={{
@@ -122,204 +143,149 @@ const Navbar = () => {
             background: "black",
           }}
         >
-          <Tabs
-            style={{ justifyContent: "flex-end" }}
-            value={value}
-            onChange={handleChange}
-            centered
-          >
-            <Tab
-              label="Item One"
-              value="FirstTab"
-              style={{
-                color: "white",
-                background: value === "FirstTab" ? "blueViolet" : "",
-              }}
-            />
-            <Tab
-              label="Item Two"
-              value="SecondTab"
-              style={{
-                color: "white",
-                background: value === "SecondTab" ? "blueViolet" : "",
-              }}
-            />
-            <Tab
-              label="Item Three"
-              value="ThirdTab"
-              style={{
-                color: "white",
-                background: value === "ThirdTab" ? "blueViolet" : "",
-              }}
-            />
-            <Tab
-              label="Assignment"
-              value="Assignment"
-              style={{
-                color: "white",
-                background: value === "Assignment" ? "blueViolet" : "",
-              }}
-            />
-          </Tabs>
+          <div>
+            <Tabs
+              style={{ justifyContent: "flex-end", display: "grid" }}
+              value={value}
+              onChange={handleChange}
+              // centered
+            >
+              <Tab
+                label="Theme Page"
+                value="ThemePage"
+                style={{
+                  color: "white",
+                  background: value === "ThemePage" ? "blueViolet" : "",
+                }}
+              />
+              <Tab
+                label="Item One"
+                value="FirstTab"
+                style={{
+                  color: "white",
+                  background: value === "FirstTab" ? "blueViolet" : "",
+                }}
+              />
+              <Tab
+                label="Item Two"
+                value="SecondTab"
+                style={{
+                  color: "white",
+                  background: value === "SecondTab" ? "blueViolet" : "",
+                }}
+              />
+              <Tab
+                label="Item Three"
+                value="ThirdTab"
+                style={{
+                  color: "white",
+                  background: value === "ThirdTab" ? "blueViolet" : "",
+                }}
+              />
+              <Tab
+                label="Assignment"
+                value="Assignment"
+                style={{
+                  color: "white",
+                  background: value === "Assignment" ? "blueViolet" : "",
+                }}
+              />
+            </Tabs>
+          </div>
         </Box>
       </div>
       {value === "SecondTab" && (
-        <div
-          style={{
-            marginLeft: "30%",
-            marginTop: "25px",
-            width: "600px",
-            height: "400px",
-            backgroundColor: "beige",
-            boxShadow: "0px 5px 10px 0px rgba(0, 0, 0, 0.5)",
-          }}
-        >
-          <div
-            style={{
-              marginLeft: "200px",
-              fontSize: "xx-large",
-              fontStyle: "oblique",
-              fontFamily: "auto",
-            }}
-          >
-            CustomerService
-          </div>
-          <div
-            style={{
-              fontSize: "24px",
-              fontStyle: "oblique",
-              fontFamily: "auto",
-              fontWeight: "bold",
-              marginLeft: "200px",
-            }}
-          >
-            {`${firstArray[currentQuestion].question}${
-              currentQuestion + 1
-            }${"/3"}`}
-          </div>
-          <div style={{ display: "grid", paddingLeft: "200px" }}>
-            {firstArray[currentQuestion].options.map((opts) => (
-              <div style={{ paddingTop: "16px" }}>
-                <Button
-                  style={{
-                    border: "2px solid blue",
-                    width: "200px",
-                    boxShadow: "0px 5px 10px 0px rgba(0, 0, 0, 0.5)",
-                    textDecorationColor: "coral",
-                    backgroundColor:
-                      opts.isChecked === true ? "chartreuse" : "",
-                  }}
-                  checked={opts.isChecked === true}
-                  size="small"
-                  onClick={() => handleSelection(opts)}
-                >
-                  {opts.radio1}
-                </Button>
-              </div>
+        <div className="questionnaire-container">
+          <h1 className="question-title">
+            {questions[currentQuestion - 1].question}
+          </h1>
+          <div className="options-container">
+            {questions[currentQuestion - 1].options.map((option) => (
+              <button
+                key={option}
+                className={`option-button ${
+                  selectedAnswers[currentQuestion] === option ? "selected" : ""
+                }`}
+                onClick={() => handleOptionSelect(option)}
+              >
+                {option}
+              </button>
             ))}
           </div>
-          <div style={{ marginTop: "12px" }}>
-            {currentQuestion !== 0 && (
-              <Button
-                style={{
-                  border: "3px solid firebrick",
-                  width: "200px",
-                  textDecorationColor: "coral",
-                  borderRadius: "30px",
-                }}
-                onClick={handlePrev}
-              >
-                Prev Question
-              </Button>
+          <div className="navigation-container">
+            {currentQuestion > 1 && (
+              <button className="previous-button" onClick={handlePrevious}>
+                Previous
+              </button>
             )}
-            {currentQuestion !== 2 && (
-              <Button
-                style={{
-                  marginLeft: "200px",
-                  border: "3px solid firebrick",
-                  width: "200px",
-                  textDecorationColor: "coral",
-                  borderRadius: "30px",
-                  float: "right",
-                }}
-                onClick={handleNext}
-              >
-                Next Question
-              </Button>
-            )}
-            {currentQuestion === 2 && (
-              <Button
-                style={{
-                  marginLeft: "200px",
-                  border: "3px solid firebrick",
-                  width: "200px",
-                  textDecorationColor: "coral",
-                  borderRadius: "30px",
-                  float: "right",
-                }}
-                // onClick={handleNext}
-              >
-                Submit Answers
-              </Button>
+            {currentQuestion < questions.length ? (
+              <button className="next-button" onClick={handleNext}>
+                Next
+              </button>
+            ) : (
+              <button className="submit-button" onClick={handleSubmit}>
+                Submit
+              </button>
             )}
           </div>
         </div>
       )}
       {value === "ThirdTab" && (
-        <div>
-          <Grid
-            // style={{ display: "flex", justifyContent: "center" }}
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-            }}
-            container
-            spacing={2}
-          >
-            {/* {isOpen && Modal()} */}
-            {items?.map((val) => (
-              <Card
-                sx={{
-                  width: 500,
-                  height: 480,
-                  marginLeft: 25,
-                  marginTop: 8.5,
-                }}
-                onClick={() => handleMouseEnter(val)}
-              >
-                <CardActionArea>
-                  <CardMedia
-                    component="img"
-                    height="220"
-                    image={val.thumbnail.large}
-                    alt="green iguana"
-                  />
-                  <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
-                      {val.title}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {val.content}
-                    </Typography>
-                    <Typography
-                      style={{ marginTop: 12 }}
-                      variant="body2"
-                      color="text.secondary"
-                    >
-                      {val.author.name}
-                      {"-"}
-                      {val.author.role}
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
-                <CardActions>
-                  <Button size="small" onClick={() => handleClick(val)}>
-                    Learn More
-                  </Button>
-                </CardActions>
-              </Card>
-            ))}
-          </Grid>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            flexDirection: "row",
+            width: "100%",
+            backgroundColor: "green",
+            background: "linear-gradient(to right, red, yellow, green)",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            objectFit: "cover",
+          }}
+        >
+          {items?.map((val, index) => (
+            <Card
+              style={{ margin: "10px", marginLeft: "15px" }}
+              sx={{
+                width: "30%",
+                height: 480,
+                width: 420,
+              }}
+              onClick={() => handleMouseEnter(val)}
+            >
+              <CardActionArea>
+                <CardMedia
+                  component="img"
+                  height="220"
+                  image={val.thumbnail.large}
+                  alt="green iguana"
+                />
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="div">
+                    {val.title}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {val.content}
+                  </Typography>
+                  <Typography
+                    style={{ marginTop: 12 }}
+                    variant="body2"
+                    color="text.secondary"
+                  >
+                    {val.author.name}
+                    {"-"}
+                    {val.author.role}
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+              <CardActions>
+                <Button size="small" onClick={() => handleClick(val)}>
+                  Learn More
+                </Button>
+              </CardActions>
+            </Card>
+          ))}
           <Modal
             open={open}
             onClose={handleClick}
@@ -355,15 +321,18 @@ const Navbar = () => {
         </div>
       )}
       {value === "FirstTab" && (
-        <div style={{ marginTop: 50, marginLeft: 50 }}>
+        <div style={{ display: "flex", alignContent: "center" }}>
           <FirstTab />
         </div>
       )}
+      {value === "ThemePage" && <Theme />}
+
       {value === "Assignment" && (
         <div style={{ marginTop: 20, marginLeft: 10 }}>
           <Assignment />
         </div>
       )}
+      <Snackbar />
     </>
   );
 };
