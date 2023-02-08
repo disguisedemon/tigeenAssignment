@@ -11,7 +11,7 @@ import HoodieLanding from "./hoodieComponents/hoodieLanding";
 // import ContactLanding from "./hoodieComponents/contactLanding";
 import App from "./hoodieComponents/contactLanding";
 import useHoodieStyles from "./hoodieStyle.styled";
-import { Route, Link, Switch, useHistory } from "react-router-dom";
+import { Route, Link, Switch } from "react-router-dom";
 
 const NavOptions = () => {
   const LinkJson = [
@@ -20,7 +20,6 @@ const NavOptions = () => {
     { linkName: "About", to: "/about" },
     { linkName: "Contact", to: "/contact" },
   ];
-  const history = useHistory();
   // console.log(history);
   const iconProvider = (val) => {
     switch (val.linkName) {
@@ -62,8 +61,8 @@ const NavOptions = () => {
   );
 };
 
-const Navbar = props => {
-const {handleSignOut} = props;
+const Navbar = (props) => {
+  const { handleSignOut } = props;
   const [navDrawerOpen, setNavDrawerOpen] = useState(false);
 
   const toggleNavDrawer = () => {
